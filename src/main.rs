@@ -1,11 +1,104 @@
 use std::collections::{HashSet, HashMap};
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::thread::scope;
 
 fn main() {
-    let result = y2022q1a();
+    let result = y2022q2a();
 
     println!("{}", result);
+}
+
+fn pointsScored(opponent: &str, me: &str) -> i32 {
+    let mut score = 0;
+
+    if me == "X" {
+        score = score + 1;
+        if opponent == "A" {
+            score = score + 3;
+        } else if opponent == "C" {
+            score = score + 6
+        }
+    } else if  me == "Y" {
+        score = score + 2;
+        if opponent == "B" {
+            score = score + 3;
+        } else if opponent == "A" {
+            score = score + 6
+        }
+    } else {
+        score = score + 3;
+        if opponent == "C" {
+            score = score + 3;
+        } else if opponent == "B" {
+            score = score + 6
+        }
+    }
+
+    score
+
+}
+
+fn pointsScoreds2(opponent: &str, me: &str) -> i32 {
+    let mut score = 0;
+
+    if opponent == "A" {
+        if me == "X" {
+            score = score + 3;
+            score = score + 0;
+        } else if me == "Y" {
+            score = score + 1;
+            score = score + 3;
+        } else {
+            score = score + 2;
+            score = score + 6;
+        }
+    } else if  opponent == "B" {
+        if me == "X" {
+            score = score + 1;
+            score = score + 0;
+        } else if me == "Y" {
+            score = score + 2;
+            score = score + 3;
+        } else {
+            score = score + 3;
+            score = score + 6;
+        }
+    } else {
+        if me == "X" {
+            score = score + 2;
+            score = score + 0;
+        } else if me == "Y" {
+            score = score + 3;
+            score = score + 3;
+        } else {
+            score = score + 1;
+            score = score + 6;
+        }
+    }
+
+    score
+
+}
+
+
+fn y2022q2a() -> i32 {
+    let mut score = 0;
+
+    let file_name = "input/y2022q2.txt";
+    println!("Reading file {}", file_name);
+
+    let f = File::open(file_name).unwrap();
+    let reader = BufReader::new(f);
+
+    let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    for i in input {
+        let (opponent, me) = i.split_once(" ").unwrap();
+        score = score + pointsScoreds2(opponent, me);
+    }
+
+    score
 }
 
 fn y2022q1a() -> i32 {
