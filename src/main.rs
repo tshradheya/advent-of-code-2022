@@ -1,12 +1,91 @@
 use std::collections::{HashSet, HashMap};
 use std::io::{BufRead, BufReader};
 use std::fs::File;
+use std::ptr::hash;
 use std::thread::scope;
 
+
 fn main() {
-    let result = y2022q2a();
+    let result = y2022q3b();
 
     println!("{}", result);
+}
+
+fn y2022q3b() -> i32 {
+
+    let mut result = 0;
+
+    let file_name = "input/y2022q3.txt";
+    println!("Reading file {}", file_name);
+
+    let f = File::open(file_name).unwrap();
+    let reader = BufReader::new(f);
+
+    let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    let mut hash_map: HashMap<char, i32> = HashMap::new();
+
+    for (idx, i) in input.iter().enumerate() {
+        let setF: HashSet<char> = i.chars().collect();
+        for j in setF {
+            if hash_map.contains_key(&j) {
+                hash_map.insert(j, hash_map.get(&j).unwrap() + 1);
+            } else {
+                hash_map.insert(j, 1);
+            }
+        }
+
+        if idx % 3 == 2 {
+            for (&x, &y) in hash_map.iter()  {
+                println!("{} {}", x, y);
+                if y == 3 {
+                    if x.is_lowercase() {
+                        result = result + (x as i32 - 96);
+                    } else {
+                        result = result + (x as i32 - 64) + 26;
+                    }
+                    break
+                }
+            }
+            hash_map.clear();
+        }
+    }
+
+    result
+}
+
+fn y2022q3a() -> i32 {
+
+    let mut result = 0;
+
+    let file_name = "input/y2022q2.txt";
+    println!("Reading file {}", file_name);
+
+    let f = File::open(file_name).unwrap();
+    let reader = BufReader::new(f);
+
+    let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    for i in input {
+        let len = i.len() / 2;
+        let first: String = i.chars().take(len).collect();
+        let second: String = i.chars().skip(len).take(len).collect();
+
+        let setF: HashSet<char> = first.chars().collect();
+
+        for j in second.chars() {
+            if setF.contains(&j) {
+                if j.is_lowercase() {
+                    result = result + (j as i32 - 96);
+                } else {
+                    result = result + (j as i32 - 64) + 26;
+                }
+                break
+            }
+        }
+    }
+
+    result
 }
 
 fn pointsScored(opponent: &str, me: &str) -> i32 {
