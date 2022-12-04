@@ -6,9 +6,49 @@ use std::thread::scope;
 
 
 fn main() {
-    let result = y2022q3b();
+    let result = y2022q4a();
 
     println!("{}", result);
+}
+
+fn y2022q4a() ->  i32 {
+    let mut result = 0;
+    let mut resultB = 0;
+
+    let file_name = "input/y2022q4.txt";
+    println!("Reading file {}", file_name);
+
+    let f = File::open(file_name).unwrap();
+    let reader = BufReader::new(f);
+
+    let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    for i in input {
+        let (first, second) = i.split_once(",").unwrap();
+
+        let (firstStart, firstEnd) = first.split_once("-").unwrap();
+        let (secondStart, secondEnd) = second.split_once("-").unwrap();
+
+        let firstStartNum = firstStart.parse::<i32>().unwrap();
+        let firstEndNum = firstEnd.parse::<i32>().unwrap();
+
+        let secondStartNum = secondStart.parse::<i32>().unwrap();
+        let secondEndNum = secondEnd.parse::<i32>().unwrap();
+
+        if firstStartNum <= secondStartNum && firstEndNum >= secondEndNum
+            || secondStartNum <= firstStartNum && secondEndNum >= firstEndNum {
+            result = result + 1
+        }
+
+        if firstStartNum >= secondStartNum && firstStartNum <= secondEndNum
+            || secondStartNum >= firstStartNum && secondStartNum <= firstEndNum {
+            resultB = resultB + 1
+        }
+
+
+    }
+
+    resultB
 }
 
 fn y2022q3b() -> i32 {
