@@ -1,19 +1,35 @@
 use std::collections::{HashSet, HashMap};
 use std::io::{BufRead, BufReader};
 use std::fs::File;
-use std::ptr::hash;
-use std::thread::scope;
 
 
 fn main() {
-    let result = y2022q4a();
+    let file_name = "input/y2022q5.txt";
+    println!("Reading file {}", file_name);
+
+    let f = File::open(file_name).unwrap();
+    let reader = BufReader::new(f);
+
+    let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    let result = y2022q5(input);
 
     println!("{}", result);
 }
 
+fn y2022q5(input: Vec<String>) -> i32 {
+    let mut result = 0;
+
+    for i in input {
+
+    }
+
+    result
+}
+
 fn y2022q4a() ->  i32 {
     let mut result = 0;
-    let mut resultB = 0;
+    let mut result_b = 0;
 
     let file_name = "input/y2022q4.txt";
     println!("Reading file {}", file_name);
@@ -26,29 +42,29 @@ fn y2022q4a() ->  i32 {
     for i in input {
         let (first, second) = i.split_once(",").unwrap();
 
-        let (firstStart, firstEnd) = first.split_once("-").unwrap();
-        let (secondStart, secondEnd) = second.split_once("-").unwrap();
+        let (first_start, first_end) = first.split_once("-").unwrap();
+        let (second_start, second_end) = second.split_once("-").unwrap();
 
-        let firstStartNum = firstStart.parse::<i32>().unwrap();
-        let firstEndNum = firstEnd.parse::<i32>().unwrap();
+        let first_start_num = first_start.parse::<i32>().unwrap();
+        let first_end_num = first_end.parse::<i32>().unwrap();
 
-        let secondStartNum = secondStart.parse::<i32>().unwrap();
-        let secondEndNum = secondEnd.parse::<i32>().unwrap();
+        let second_start_num = second_start.parse::<i32>().unwrap();
+        let second_end_num = second_end.parse::<i32>().unwrap();
 
-        if firstStartNum <= secondStartNum && firstEndNum >= secondEndNum
-            || secondStartNum <= firstStartNum && secondEndNum >= firstEndNum {
+        if first_start_num <= second_start_num && first_end_num >= second_end_num
+            || second_start_num <= first_start_num && second_end_num >= first_end_num {
             result = result + 1
         }
 
-        if firstStartNum >= secondStartNum && firstStartNum <= secondEndNum
-            || secondStartNum >= firstStartNum && secondStartNum <= firstEndNum {
-            resultB = resultB + 1
+        if first_start_num >= second_start_num && first_start_num <= second_end_num
+            || second_start_num >= first_start_num && second_start_num <= first_end_num {
+            result_b = result_b + 1
         }
 
 
     }
 
-    resultB
+    result_b
 }
 
 fn y2022q3b() -> i32 {
@@ -66,8 +82,8 @@ fn y2022q3b() -> i32 {
     let mut hash_map: HashMap<char, i32> = HashMap::new();
 
     for (idx, i) in input.iter().enumerate() {
-        let setF: HashSet<char> = i.chars().collect();
-        for j in setF {
+        let set_f: HashSet<char> = i.chars().collect();
+        for j in set_f {
             if hash_map.contains_key(&j) {
                 hash_map.insert(j, hash_map.get(&j).unwrap() + 1);
             } else {
@@ -111,10 +127,10 @@ fn y2022q3a() -> i32 {
         let first: String = i.chars().take(len).collect();
         let second: String = i.chars().skip(len).take(len).collect();
 
-        let setF: HashSet<char> = first.chars().collect();
+        let set_f: HashSet<char> = first.chars().collect();
 
         for j in second.chars() {
-            if setF.contains(&j) {
+            if set_f.contains(&j) {
                 if j.is_lowercase() {
                     result = result + (j as i32 - 96);
                 } else {
@@ -128,7 +144,7 @@ fn y2022q3a() -> i32 {
     result
 }
 
-fn pointsScored(opponent: &str, me: &str) -> i32 {
+fn points_scored(opponent: &str, me: &str) -> i32 {
     let mut score = 0;
 
     if me == "X" {
@@ -158,7 +174,7 @@ fn pointsScored(opponent: &str, me: &str) -> i32 {
 
 }
 
-fn pointsScoreds2(opponent: &str, me: &str) -> i32 {
+fn points_scoreds2(opponent: &str, me: &str) -> i32 {
     let mut score = 0;
 
     if opponent == "A" {
@@ -214,7 +230,7 @@ fn y2022q2a() -> i32 {
 
     for i in input {
         let (opponent, me) = i.split_once(" ").unwrap();
-        score = score + pointsScoreds2(opponent, me);
+        score = score + points_scoreds2(opponent, me);
     }
 
     score
@@ -231,15 +247,15 @@ fn y2022q1a() -> i32 {
 
     let mut hash_map: HashMap<i32, i32> = HashMap::new();
 
-    let mut elfNum = 1;
+    let mut elf_num = 1;
     for i in input {
         if i.is_empty() {
-            elfNum = elfNum + 1;
+            elf_num = elf_num + 1;
         } else {
-            if hash_map.contains_key(&elfNum) {
-                hash_map.insert(elfNum, hash_map.get(&elfNum).unwrap() + i.parse::<i32>().unwrap());
+            if hash_map.contains_key(&elf_num) {
+                hash_map.insert(elf_num, hash_map.get(&elf_num).unwrap() + i.parse::<i32>().unwrap());
             } else {
-                hash_map.insert(elfNum, i.parse::<i32>().unwrap());
+                hash_map.insert(elf_num, i.parse::<i32>().unwrap());
             }
         }
     }
