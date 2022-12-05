@@ -17,11 +17,46 @@ fn main() {
     println!("{}", result);
 }
 
-fn y2022q5(input: Vec<String>) -> i32 {
-    let mut result = 0;
+fn y2022q5(input: Vec<String>) -> String {
+    let mut result: String = format!("");
+
+    let mut all_stacks: Vec<Vec<char>> = vec![vec!['D', 'L', 'V', 'T', 'M', 'H', 'F'],
+        vec!['H', 'Q', 'G', 'J', 'C', 'T', 'N', 'P'],
+        vec!['R', 'S', 'D', 'M', 'P', 'H'],
+        vec!['L', 'B', 'V', 'F'],
+        vec!['N', 'H', 'G', 'L', 'Q'],
+        vec!['W', 'B', 'D', 'G', 'R', 'M', 'P'],
+        vec!['G', 'M', 'N', 'R', 'C', 'H', 'L', 'Q'],
+        vec!['C', 'L', 'W'],
+        vec!['R', 'D', 'L', 'Q', 'J', 'Z', 'M', 'T'],
+    ];
 
     for i in input {
+        if i.contains("move") {
+            let values: Vec<&str> = i.split(" ").collect();
 
+            let src_stack = values[3].parse::<usize>().unwrap() - 1;
+            let dest_stack = values[5].parse::<usize>().unwrap() - 1;
+            let num = values[1].parse::<i32>().unwrap();
+
+            let mut temp_stack: Vec<char> = Vec::new();
+            for _ in 1..=num {
+                // let option = all_stacks[src_stack].pop().unwrap();
+                // all_stacks[dest_stack].push(option);
+
+                let option = all_stacks[src_stack].pop().unwrap();
+                temp_stack.push(option);
+            }
+            temp_stack.reverse();
+
+            for k in temp_stack {
+                all_stacks[dest_stack].push(k);
+            }
+        }
+    }
+
+    for mut x in all_stacks {
+        result.push(x.pop().unwrap());
     }
 
     result
