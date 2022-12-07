@@ -1,10 +1,10 @@
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashSet, HashMap, VecDeque};
 use std::io::{BufRead, BufReader};
 use std::fs::File;
 
 
 fn main() {
-    let file_name = "input/y2022q5.txt";
+    let file_name = "input/y2022q7.txt";
     println!("Reading file {}", file_name);
 
     let f = File::open(file_name).unwrap();
@@ -12,9 +12,85 @@ fn main() {
 
     let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
 
-    let result = y2022q5(input);
+    let result = y2022q7(input);
 
     println!("{}", result);
+}
+
+// Given up
+fn y2022q7(input: Vec<String>) -> i32 {
+    let mut result = 0;
+
+    let mut stack: VecDeque<String> = VecDeque::new();
+
+    // let mut curr_dir: String = "root/".parse().unwrap();
+    let mut hash_map: HashMap<String, i32> = HashMap::new();
+
+    stack.push_front("/".parse().unwrap());
+
+    for i in input {
+        if i.starts_with("$ cd ") {
+            let dir = i.split(" ").nth(2).unwrap().to_string();
+            if dir == ".." {
+                stack.pop_back();
+                // let to_remove: String = curr_dir.chars().take(curr_dir.len() - 1).collect();
+                //
+                // let final_remv = to_remove.split("/").last().unwrap();
+                // curr_dir = to_remove.strip_suffix(final_remv).unwrap().to_string();
+            } else if dir != "/" {
+                // curr_dir = curr_dir + dir + "/";
+                stack.push_back(dir)
+            }
+        } else if i.starts_with("$ ls") {
+            continue
+        } else if i.starts_with("dir ") {
+            continue
+        } else if i.chars().nth(0).unwrap().is_numeric() {
+            let value = i.split(" ").nth(0).unwrap().parse::<i32>().unwrap();
+            // println!("{}", value);
+            for j in 0..=stack.len() {
+                let mut final_path = "".to_string();
+                for (idx, k) in stack.to_owned().into_iter().enumerate() {
+                    let mut abd = "";
+                    if idx == 0 {
+                        abd = ""
+                    } else {
+                        abd = "/"
+                    }
+                    if idx <= j  {
+                        final_path =  final_path.to_string() + k.as_str() + abd;
+                    }
+                }
+
+                // println!("{}", final_path);
+
+
+                // let mut new_stack = stack.clone().range(0..j);
+                // let ab = new_stack.make_contiguous().join("/");
+                //
+                // println!("{} {}", ab, value);
+                if !hash_map.contains_key(&*final_path)  {
+                    hash_map.insert(final_path, value);
+                    println!("{}", hash_map.get(&*"/".to_string()).unwrap());
+                } else {
+                    let mut abc  = final_path.clone().to_owned();
+                    let mut val = hash_map.get(&*abc).unwrap();
+                    hash_map.insert(abc,  val + value);
+                    println!("{}", hash_map.get(&*"/".to_string()).unwrap());
+                }
+            }
+        }
+    }
+
+    for &y in hash_map.values()  {
+        println!("{}", y);
+        if y < 100000 {
+            result = result + y;
+        }
+
+    }
+
+    result
 }
 
 fn y2022q5(input: Vec<String>) -> String {
