@@ -4,7 +4,7 @@ use std::fs::File;
 
 
 fn main() {
-    let file_name = "input/y2022q7.txt";
+    let file_name = "input/y2022q8.txt";
     println!("Reading file {}", file_name);
 
     let f = File::open(file_name).unwrap();
@@ -12,9 +12,155 @@ fn main() {
 
     let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
 
-    let result = y2022q7(input);
+    let result = y2022q8b(input);
 
     println!("{}", result);
+}
+
+fn y2022q8b(input: Vec<String>) -> i32 {
+    let mut result = 0;
+
+    let mut grid: Vec<Vec<i32>> = Vec::new();
+
+    for i in input {
+        let mut single_vec: Vec<i32> = Vec::new();
+        for j in i.chars() {
+            single_vec.push(j.to_digit(10).unwrap() as i32)
+        }
+
+        grid.push(single_vec)
+    }
+
+    let mut temp_grid = grid.clone();
+
+    let r = temp_grid.len();
+    let c = temp_grid.get(0).unwrap().len();
+
+
+    for (idx_i, i) in grid.into_iter().enumerate() {
+        for (idx_j,j) in i.into_iter().enumerate() {
+
+
+            let mut left_score = 0;
+            let mut right_score = 0;
+            let mut up_score = 0;
+            let mut down_score = 0;
+
+
+            let curr_val = temp_grid.get(idx_i).unwrap().get(idx_j).unwrap();
+            for k in (0..idx_j).rev() {
+                if temp_grid.get(idx_i).unwrap().get(k).unwrap() >= curr_val {
+                    left_score = left_score + 1;
+                    break
+                } else {
+                    left_score = left_score + 1;
+                }
+            }
+            for l in idx_j+1..c {
+                if temp_grid.get(idx_i).unwrap().get(l).unwrap() >= curr_val {
+                    right_score = right_score + 1;
+                    break
+                } else {
+                    right_score = right_score + 1
+                }
+            }
+            for m in (0..idx_i).rev() {
+                if temp_grid.get(m).unwrap().get(idx_j).unwrap() >= curr_val {
+                    up_score = up_score + 1;
+                    break
+                } else {
+                    up_score = up_score + 1;
+
+                }
+            }
+            for n in idx_i+1..r {
+                if temp_grid.get(n).unwrap().get(idx_j).unwrap() >= curr_val {
+                    down_score = down_score + 1;
+
+                    break
+                } else {
+                    down_score = down_score + 1;
+
+                }
+            }
+
+            let mut is_satisfied = left_score * right_score * up_score * down_score;
+            if is_satisfied >  result {
+                result = is_satisfied
+            }
+
+        }
+    }
+    result
+
+}
+
+
+fn y2022q8(input: Vec<String>) -> i32 {
+    let mut result = 0;
+
+    let mut grid: Vec<Vec<i32>> = Vec::new();
+
+    for i in input {
+        let mut single_vec: Vec<i32> = Vec::new();
+        for j in i.chars() {
+            single_vec.push(j.to_digit(10).unwrap() as i32)
+        }
+
+        grid.push(single_vec)
+    }
+
+    let mut temp_grid = grid.clone();
+
+    let r = temp_grid.len();
+    let c = temp_grid.get(0).unwrap().len();
+
+
+    for (idx_i, i) in grid.into_iter().enumerate() {
+        for (idx_j,j) in i.into_iter().enumerate() {
+            if idx_i == 0 || idx_i == r - 1 || idx_j == 0 || idx_j == c - 1 {
+                result = result + 1
+            } else {
+                let mut is_satisfied_1 = true;
+                let mut is_satisfied_2 = true;
+                let mut is_satisfied_3 = true;
+                let mut is_satisfied_4 = true;
+
+
+
+
+                let curr_val = temp_grid.get(idx_i).unwrap().get(idx_j).unwrap();
+                for k in 0..idx_j {
+                    if temp_grid.get(idx_i).unwrap().get(k).unwrap() >= curr_val {
+                        is_satisfied_1 = false
+                    }
+                }
+                for l in idx_j+1..c {
+                    if temp_grid.get(idx_i).unwrap().get(l).unwrap() >= curr_val {
+                        is_satisfied_2 = false
+                    }
+                }
+                for m in 0..idx_i {
+                    if temp_grid.get(m).unwrap().get(idx_j).unwrap() >= curr_val {
+                        is_satisfied_3 = false
+                    }
+                }
+                for n in idx_i+1..r {
+                    if temp_grid.get(n).unwrap().get(idx_j).unwrap() >= curr_val {
+                        is_satisfied_4 = false
+                    }
+                }
+
+                let mut is_satisfied = is_satisfied_1 || is_satisfied_2 || is_satisfied_3 || is_satisfied_4;
+                if is_satisfied {
+                    result = result + 1
+                }
+
+            }
+        }
+    }
+    result
+
 }
 
 // Given up
