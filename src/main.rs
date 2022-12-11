@@ -4,7 +4,7 @@ use std::fs::File;
 
 
 fn main() {
-    let file_name = "input/y2022q8.txt";
+    let file_name = "input/y2022q10.txt";
     println!("Reading file {}", file_name);
 
     let f = File::open(file_name).unwrap();
@@ -12,10 +12,61 @@ fn main() {
 
     let input: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
 
-    let result = y2022q8b(input);
+    let result = y2022q10(input);
 
     println!("{}", result);
 }
+
+fn y2022q10(input: Vec<String>) -> i32 {
+    let mut result = 0;
+    let mut cycle_count = 0;
+    let mut curr_val = 1;
+
+    for i in input {
+
+        if i.starts_with("noop") {
+            cycle_count = cycle_count + 1;
+            if vec![20, 60, 100, 140, 180, 220].contains(&cycle_count) {
+                result = result + (cycle_count * curr_val)
+            }
+            let sprite_val = cycle_count % 40;
+            if (curr_val..curr_val+3).contains(&sprite_val)  {
+                print!("#")
+            } else {
+                print!(".")
+            }
+            if sprite_val == 0 {
+                println!()
+            }
+
+        } else {
+            let (_, val) = i.split_once(" ").unwrap();
+            let num_val = val.parse::<i32>().unwrap();
+
+            for j in 0..2 {
+                cycle_count = cycle_count + 1;
+                if vec![20, 60, 100, 140, 180, 220].contains(&cycle_count) {
+                    result = result + (cycle_count * curr_val)
+                }
+                let sprite_val = cycle_count % 40;
+
+                if (curr_val..curr_val+3).contains(&sprite_val)  {
+                    print!("#")
+                } else {
+                    print!(".")
+                }
+                if sprite_val == 0 {
+                    println!()
+                }
+            }
+            curr_val = curr_val + num_val;
+
+        }
+    }
+    result
+}
+
+
 
 fn y2022q8b(input: Vec<String>) -> i32 {
     let mut result = 0;
